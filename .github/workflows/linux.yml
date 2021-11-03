@@ -1,0 +1,26 @@
+name: Swift package tests (Linux)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download Swift 5.5.1
+      run: wget -q https://download.swift.org/swift-5.5.1-release/ubuntu2004/swift-5.5.1-RELEASE/swift-5.5.1-RELEASE-ubuntu20.04.tar.gz
+    - name: Extract Swift 5.5.1
+      run: tar xzf swift-5.5.1-RELEASE-ubuntu20.04.tar.gz
+    - name: Add Swift toolchain to PATH
+      run: |
+          echo "$GITHUB_WORKSPACE/swift-5.5.1-RELEASE-ubuntu20.04/usr/bin" >> $GITHUB_PATH
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test --enable-test-discovery -v

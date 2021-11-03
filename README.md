@@ -2,6 +2,8 @@
 
 UUIDv4 and v6\* generation in Swift.
 
+[[API Reference](https://karwa.github.io/uniqueid/)]
+
 A UUID is an identifier that is unique across both space and time, with respect to the space of all UUIDs. They are used for multiple purposes, from tagging objects with an extremely short lifetime, to reliably identifying very persistent objects across a network.
 
 `UniqueID` supports any 128-bit UUID, and is fully compatible with Foundation's `UUID`. It also includes features to generate 2 kinds of ID:

@@ -12,37 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Foundation
+#if !NO_FOUNDATION_COMPAT
 
-extension UUID {
+  import Foundation
 
-  /// Losslessly convert a `UniqueID` to a Foundation `UUID`.
-  ///
-  @inlinable
-  public init(_ uniqueID: UniqueID) {
-    self.init(uuid: uniqueID.bytes)
+  extension UUID {
+
+    /// Losslessly convert a `UniqueID` to a Foundation `UUID`.
+    ///
+    @inlinable
+    public init(_ uniqueID: UniqueID) {
+      self.init(uuid: uniqueID.bytes)
+    }
   }
-}
 
-extension UniqueID {
+  extension UniqueID {
 
-  /// Losslessly convert a Foundation `UUID` to a `UniqueID`.
-  ///
-  @inlinable
-  public init(_ uuid: Foundation.UUID) {
-    self.init(bytes: uuid.uuid)
+    /// Losslessly convert a Foundation `UUID` to a `UniqueID`.
+    ///
+    @inlinable
+    public init(_ uuid: Foundation.UUID) {
+      self.init(bytes: uuid.uuid)
+    }
   }
-}
 
-// Note: 'Date' will move in to the standard library and increase precision to capture this timestamp exactly.
-// https://forums.swift.org/t/pitch-clock-instant-date-and-duration/52451
+  // Note: 'Date' will move in to the standard library and increase precision to capture this timestamp exactly.
+  // https://forums.swift.org/t/pitch-clock-instant-date-and-duration/52451
 
-extension UniqueID.TimeOrdered {
+  extension UniqueID.TimeOrdered {
 
-  /// The timestamp of the UUID. Note that this has at most 100ns precision.
-  ///
-  @inlinable
-  public var timestamp: Date {
-    Date(timeIntervalSince1970: TimeInterval(_uuid_timestamp_to_unix(timestamp: rawTimestamp)) / 10_000_000)
+    /// The timestamp of the UUID. Note that this has at most 100ns precision.
+    ///
+    @inlinable
+    public var timestamp: Date {
+      Date(timeIntervalSince1970: TimeInterval(_uuid_timestamp_to_unix(timestamp: rawTimestamp)) / 10_000_000)
+    }
   }
-}
+
+#endif  // NO_FOUNDATION_COMPAT

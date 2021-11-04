@@ -16,6 +16,24 @@
 
 import PackageDescription
 
+// This package recognizes the conditional compilation flags listed below.
+// To use enable them, uncomment the corresponding lines or define them
+// from the package manager command line:
+//
+//     swift build -Xswiftc -DNO_FOUNDATION_COMPAT
+var settings: [SwiftSetting]? = [
+
+  // Do not depend on Foundation.
+  //
+  // This removes:
+  // - UUID <-> UniqueID conversion APIs.
+  // - UUID timestamps as 'Date' (but Date will soon join the standard library).
+  //.define("NO_FOUNDATION_COMPAT"),
+
+]
+
+if settings?.isEmpty == true { settings = nil }
+
 let package = Package(
     name: "UniqueID",
     products: [
@@ -25,7 +43,13 @@ let package = Package(
       .package(name: "swift-atomics", url: "https://github.com/apple/swift-atomics", .upToNextMajor(from: "1.0.0"))
     ],
     targets: [
-      .target(name: "UniqueID", dependencies: [.product(name: "Atomics", package: "swift-atomics")]),
-      .testTarget(name: "UniqueIDTests", dependencies: ["UniqueID"]),
+      .target(
+        name: "UniqueID",
+        dependencies: [.product(name: "Atomics", package: "swift-atomics")],
+        swiftSettings: settings),
+      .testTarget(
+        name: "UniqueIDTests",
+        dependencies: ["UniqueID"],
+        swiftSettings: settings),
     ]
 )

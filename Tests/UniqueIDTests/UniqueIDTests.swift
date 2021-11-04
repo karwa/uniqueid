@@ -291,18 +291,22 @@ extension UniqueIDTests {
 
 extension UniqueIDTests {
 
-  func testFoundationCompat() {
-    do {
-      let uuid: UUID = UUID(.timeOrdered())
-      let uniqueID: UniqueID = UniqueID(uuid)
-      XCTAssertEqual(uniqueID.description, uuid.description)
+  #if !NO_FOUNDATION_COMPAT
+
+    func testFoundationCompat() {
+      do {
+        let uuid: UUID = UUID(.timeOrdered())
+        let uniqueID: UniqueID = UniqueID(uuid)
+        XCTAssertEqual(uniqueID.description, uuid.description)
+      }
+      do {
+        let uuid = UUID()
+        let uniqueID = UniqueID(uuid)
+        XCTAssertEqual(uniqueID.description, uuid.description)
+      }
     }
-    do {
-      let uuid = UUID()
-      let uniqueID = UniqueID(uuid)
-      XCTAssertEqual(uniqueID.description, uuid.description)
-    }
-  }
+
+  #endif  // NO_FOUNDATION_COMPAT
 
   func testParseHexTable() {
     XCTAssertEqual(_parseHex_table.count, Int(UInt8.max))

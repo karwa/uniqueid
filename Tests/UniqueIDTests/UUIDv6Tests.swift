@@ -94,9 +94,11 @@ extension UUIDv6Tests {
         XCTFail("Not a valid UUIDv6")
         continue
       }
-      XCTAssertGreaterThan(components.timestamp, beforeCreate)
+      #if !NO_FOUNDATION_COMPAT
+        XCTAssertGreaterThan(components.timestamp, beforeCreate)
+        XCTAssertLessThan(components.timestamp, afterCreate)
+      #endif  // NO_FOUNDATION_COMPAT
       XCTAssertGreaterThan(components.rawTimestamp, beforeCreateRaw)
-      XCTAssertLessThan(components.timestamp, afterCreate)
       XCTAssertLessThan(components.rawTimestamp, afterCreateRaw)
     }
   }

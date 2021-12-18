@@ -29,11 +29,13 @@ internal func _get_system_timestamp() -> UInt64 {
   if #available(macOS 10.12, *) {
     var time = timespec()
     clock_gettime(CLOCK_REALTIME, &time)
-    timestamp = (UInt64(time.tv_sec) &* 10_000_000) &+ (UInt64(time.tv_nsec) / 100)
+    timestamp =
+      (UInt64(bitPattern: Int64(time.tv_sec)) &* 10_000_000) &+ (UInt64(bitPattern: Int64(time.tv_nsec)) / 100)
   } else {
     var time = timeval()
     gettimeofday(&time, nil)
-    timestamp = (UInt64(time.tv_sec) &* 10_000_000) &+ (UInt64(time.tv_usec) &* 10)
+    timestamp =
+      (UInt64(bitPattern: Int64(time.tv_sec)) &* 10_000_000) &+ (UInt64(bitPattern: Int64(time.tv_usec)) &* 10)
   }
   return timestamp & 0x0FFF_FFFF_FFFF_FFFF
 }

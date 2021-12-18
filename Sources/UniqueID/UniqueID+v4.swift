@@ -73,15 +73,23 @@ extension UniqueID {
   ///
   @inlinable
   public static func random<RNG>(using rng: inout RNG) -> UniqueID where RNG: RandomNumberGenerator {
-    var randomBytes: (UInt64, UInt64) = (rng.next(), rng.next())
-    return withUnsafeMutableBytes(of: &randomBytes) { bytes in
-      // octet 6 = time_hi_and_version (high octet).
-      // high 4 bits = version number.
-      bytes[6] = (bytes[6] & 0xF) | 0x40
-      // octet 8 = clock_seq_high_and_reserved.
-      // high 2 bits = variant (10 = standard).
-      bytes[8] = (bytes[8] & 0x3F) | 0x80
-      return UniqueID(bytes: bytes.load(as: UniqueID.Bytes.self))
+    var bytes = UniqueID.null.bytes
+    withUnsafeMutableBytes(of: &bytes) { dest in
+      var random = rng.next()
+      Swift.withUnsafePointer(to: &random) {
+        dest.baseAddress!.copyMemory(from: UnsafeRawPointer($0), byteCount: 8)
+      }
+      random = rng.next()
+      Swift.withUnsafePointer(to: &random) {
+        dest.baseAddress!.advanced(by: 8).copyMemory(from: UnsafeRawPointer($0), byteCount: 8)
+      }
     }
+    // octet 6 = time_hi_and_version (high octet).
+    // high 4 bits = version number.
+    bytes.6 = (bytes.6 & 0xF) | 0x40
+    // octet 8 = clock_seq_high_and_reserved.
+    // high 2 bits = variant (10 = standard).
+    bytes.8 = (bytes.8 & 0x3F) | 0x80
+    return UniqueID(bytes: bytes)
   }
 }

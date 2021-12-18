@@ -43,8 +43,10 @@ let package = Package(
         targets: ["UniqueID"]),
     ],
     targets: [
+      .target(name: "Swift_UniqueID_RuntimeShims"),
       .target(
         name: "UniqueID",
+        dependencies: ["Swift_UniqueID_RuntimeShims"],
         swiftSettings: settings),
       .testTarget(
         name: "UniqueIDTests",

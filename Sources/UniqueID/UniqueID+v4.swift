@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Swift_UniqueID_RuntimeShims
+
 extension UniqueID {
 
   /// Generates a new UUID with random bits from the system's random number generator.
@@ -41,8 +43,17 @@ extension UniqueID {
   ///
   @inlinable
   public static func random() -> UniqueID {
-    var rng = SystemRandomNumberGenerator()
-    return random(using: &rng)
+    var bytes = UniqueID.null.bytes
+    withUnsafeMutableBytes(of: &bytes) { dest in
+      swift_stdlib_random(dest.baseAddress!, 16)
+    }
+    // octet 6 = time_hi_and_version (high octet).
+    // high 4 bits = version number.
+    bytes.6 = (bytes.6 & 0xF) | 0x40
+    // octet 8 = clock_seq_high_and_reserved.
+    // high 2 bits = variant (10 = standard).
+    bytes.8 = (bytes.8 & 0x3F) | 0x80
+    return UniqueID(bytes: bytes)
   }
 
   /// Generates a new UUID with random bits from the given random number generator.

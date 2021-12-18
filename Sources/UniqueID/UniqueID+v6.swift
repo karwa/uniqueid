@@ -242,7 +242,7 @@ extension UniqueID {
   public static func timeOrdered(node: UInt64) -> UniqueID {
     let timestamp = _get_system_timestamp()
     // TODO: Consider an API for stable node identifiers to use their own (perhaps Thread/Task-local) sequence counters.
-    //       This will stop the couner overflowing too quickly. Also, the sequence counter might want to work
+    //       This will stop the counter overflowing too quickly. Also, the sequence counter might want to work
     //       differently if the clock goes back and we can't rely on the node-ID to provide uniqueness.
     let sequence = withExclusiveGeneratorState { state -> UInt16 in
       if state.timestamp >= timestamp {

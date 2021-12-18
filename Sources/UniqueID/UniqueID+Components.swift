@@ -33,7 +33,7 @@ public protocol _UniqueIDComponents {
 //
 // uuid.components(.timeOrdered)?.timestamp
 //
-// Unforunately, the regular way of expressing this doesn't work:
+// Unfortunately, the regular way of expressing this doesn't work:
 //
 // extension UUID.Components where Self == TimeOrderedComponents {
 //   public static var timeOrdered: Self { ... }
@@ -41,7 +41,7 @@ public protocol _UniqueIDComponents {
 //
 // We would need to provide a dummy instance. And changing the type of the computed property `timeOrdered`
 // to `Self.Type` or `TimeOrderedComponents.Type` doesn't work - the compiler doesn't like it.
-// Hence, the workaround: use an @autoclosure parameter, which to the typechecker looks like it returns
+// Hence, the workaround: use an @autoclosure parameter, which to the type-checker looks like it returns
 // an instance (but really just fatalErrors). We don't need to create a dummy instance and
 // we get static member syntax:
 //

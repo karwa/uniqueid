@@ -18,8 +18,6 @@
 // -------------------------------------
 
 
-import Atomics
-
 @usableFromInline
 internal struct UUIDv6GeneratorState {
 
@@ -40,20 +38,61 @@ internal struct UUIDv6GeneratorState {
 
 @usableFromInline
 internal var _uuidv6GeneratorState = UUIDv6GeneratorState()
-@usableFromInline
-internal let _uuidv6GeneratorStateLock = UnsafeAtomic<Bool>.create(false)
 
-@inlinable
-internal func withExclusiveGeneratorState<T>(_ body: (inout UUIDv6GeneratorState) -> T) -> T {
-  while !_uuidv6GeneratorStateLock.weakCompareExchange(
-    expected: false, desired: true, successOrdering: .relaxed, failureOrdering: .relaxed
-  ).exchanged {}
-  atomicMemoryFence(ordering: .acquiring)
-  let returnValue = body(&_uuidv6GeneratorState)
-  atomicMemoryFence(ordering: .releasing)
-  _uuidv6GeneratorStateLock.store(false, ordering: .relaxed)
-  return returnValue
-}
+#if canImport(Darwin)
+
+  import Darwin
+
+  @usableFromInline
+  internal var _uuidv6GeneratorStateLock: UnsafeMutablePointer<os_unfair_lock> = {
+    let lock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
+    lock.initialize(to: os_unfair_lock())
+    return lock
+  }()
+
+  @inlinable
+  internal func withExclusiveGeneratorState<T>(_ body: (inout UUIDv6GeneratorState) -> T) -> T {
+    os_unfair_lock_lock(_uuidv6GeneratorStateLock)
+    let returnValue = body(&_uuidv6GeneratorState)
+    os_unfair_lock_unlock(_uuidv6GeneratorStateLock)
+    return returnValue
+  }
+
+#elseif canImport(Glibc)
+
+  import Glibc
+
+  @usableFromInline
+  internal var _uuidv6GeneratorStateLock: UnsafeMutablePointer<pthread_mutex_t> = {
+    let mutex = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: 1)
+    mutex.initialize(to: pthread_mutex_t())
+
+    var attrs = pthread_mutexattr_t()
+    guard pthread_mutexattr_init(&attrs) == 0 else { fatalError("Failed to create pthread_mutexattr_t") }
+    // Use adaptive spinning before calling in to the kernel (GNU extension).
+    let _ = pthread_mutexattr_settype(&attrs, CInt(PTHREAD_MUTEX_ADAPTIVE_NP))
+    // Bump lock-holder's priority if waited on by higher-priority threads.
+    // Prevents priority inversion.
+    let _ = pthread_mutexattr_setprotocol(&attrs, CInt(PTHREAD_PRIO_INHERIT))
+    guard pthread_mutex_init(mutex, &attrs) == 0 else { fatalError("Failed to create pthread_mutex_t") }
+    pthread_mutexattr_destroy(&attrs)
+
+    return mutex
+  }()
+
+  @inlinable
+  internal func withExclusiveGeneratorState<T>(_ body: (inout UUIDv6GeneratorState) -> T) -> T {
+    pthread_mutex_lock(_uuidv6GeneratorStateLock)
+    let returnValue = body(&_uuidv6GeneratorState)
+    pthread_mutex_unlock(_uuidv6GeneratorStateLock)
+    return returnValue
+  }
+
+#else
+
+  #error("Unsupported platform")
+
+#endif
 
 extension UniqueID {
 

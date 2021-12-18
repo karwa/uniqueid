@@ -36,16 +36,15 @@ if settings?.isEmpty == true { settings = nil }
 
 let package = Package(
     name: "UniqueID",
+    platforms: [.macOS(.v10_12) /* for os_unfair_lock */],
     products: [
-      .library(name: "UniqueID", targets: ["UniqueID"]),
-    ],
-    dependencies: [
-      .package(name: "swift-atomics", url: "https://github.com/apple/swift-atomics", .upToNextMajor(from: "1.0.0"))
+      .library(
+        name: "UniqueID",
+        targets: ["UniqueID"]),
     ],
     targets: [
       .target(
         name: "UniqueID",
-        dependencies: [.product(name: "Atomics", package: "swift-atomics")],
         swiftSettings: settings),
       .testTarget(
         name: "UniqueIDTests",

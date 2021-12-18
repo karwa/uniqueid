@@ -16,11 +16,29 @@ extension UniqueID {
 
   /// Returns a `String` representation of this UUID.
   ///
+  /// By default, this function returns a standard 8-4-4-4-12 UUID string in uppercase.
+  ///
+  /// ```swift
+  /// let id = UniqueID.random()
+  ///
+  /// print(id.serialized()) // "67E5F28C-5083-4908-BD69-D7E27C8BABA4"
+  /// print(id)              // Same as above.
+  ///
+  /// print(id.serialized(lowercase: true))
+  /// // "67e5f28c-5083-4908-bd69-d7e27c8baba4"
+  ///
+  /// print(id.serialized(separators: false))
+  /// // "67E5F28C50834908BD69D7E27C8BABA4"
+  ///
+  /// print(id.serialized(lowercase: true, separators: false))
+  /// // "67e5f28c50834908bd69d7E27c8baba4"
+  /// ```
+  ///
   /// - parameters:
   ///   - lowercase:  Whether to use lowercase hexadecimal characters in the result.
   ///                 If `false`, the result will be uppercased. The default is `false`.
-  ///   - separators: Whether the result should be in the standard 8-4-4-4-12 format, with "-" separators between groups.
-  ///                 The default is `true`.
+  ///   - separators: Whether the result should be in the standard 8-4-4-4-12 format, with `"-"` separators
+  ///                 between groups. The default is `true`.
   ///
   public func serialized(
     lowercase: Bool = false, separators: Bool = true

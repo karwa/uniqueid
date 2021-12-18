@@ -38,14 +38,16 @@ internal func _get_system_timestamp() -> UInt64 {
   return timestamp & 0x0FFF_FFFF_FFFF_FFFF
 }
 
-/// Converts a 60-bit number of 100ns intervals from the Unix epoch (January 1, 1970) to the UUID epoch (October 15, 1582).
+/// Converts a 60-bit number of 100ns intervals from the Unix epoch (January 1, 1970)
+/// to the UUID epoch (October 15, 1582).
 ///
 @inlinable
 internal func _unix_to_uuid_timestamp(unix: UInt64) -> UInt64 {
   unix &+ 0x01B2_1DD2_1381_4000
 }
 
-/// Converts a 60-bit number of 100ns intervals from the UUID epoch (October 15, 1582) to the Unix epoch (January 1, 1970).
+/// Converts a 60-bit number of 100ns intervals from the UUID epoch (October 15, 1582)
+/// to the Unix epoch (January 1, 1970).
 ///
 @inlinable
 internal func _uuid_timestamp_to_unix(timestamp: UInt64) -> UInt64 {

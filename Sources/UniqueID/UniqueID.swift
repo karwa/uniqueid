@@ -15,23 +15,141 @@
 /// A Universally Unique IDentifier (UUID).
 ///
 /// A UUID is an identifier that is unique across both space and time, with respect to the space of all UUIDs.
-/// A UUID can be used for multiple purposes, from tagging objects with an extremely short lifetime, to reliably identifying very persistent objects across a network.
+/// A UUID can be used for multiple purposes, from tagging objects with an extremely short lifetime,
+/// to reliably identifying very persistent objects across a network.
 ///
 /// `UniqueID` supports any 128-bit UUID, and includes features to generate 2 kinds of ID:
 ///
-/// - **random**: As defined in [RFC-4122][RFC-4122-UUIDv4] (UUIDv4). A 128-bit identifier, consisting of 122 random or pseudo-random bits.
-///   These are the most common form of UUIDs; for example, they are the ones Foundation's `UUID` type creates by default.
-///   The idea is that because this is such a large number, the chance of a system observing a collision is so low that it can be safely ignored.
-///   That said, they rely heavily on the amount of entropy in the random bits, and when a system is ingesting IDs created by distributed nodes or devices,
-///   the chances of collision may be higher.
+/// - **Random**: As defined in [RFC-4122][RFC-4122-UUIDv4] (UUIDv4).
 ///
-/// - **time-ordered**: Generated according to a [draft update of RFC-4122][UUIDv6-draft-02] (UUIDv6). A 128-bit identifier, consisting of a
-///   fixed-precision timestamp, per-process sequencing number, and 47-bit node ID (which may be random or pseudo-random bits). Whilst RFC-4122
-///   did include time-based UUIDs (UUIDv1), it ordered the bits such that they had poor locality and couldn't be sorted easily. UUIDv6 rearranges these bits,
-///   which dramatically improves their usability as database keys. The node ID can be configured to provide even better resilience against collisions.
+///   A 128-bit identifier, consisting of 122 random bits.
+///   These are the most common form of UUIDs; for example, they are the ones Foundation's `UUID` type creates
+///   by default. To generate a random UUID, call the static ``random()`` function.
+///
+///   ```swift
+///   for _ in 0..<3 {
+///     print(UniqueID.random())
+///   }
+///   "DFFC75B4-C92F-4DA9-97CA-7F0EEF067FF2"
+///   "67E5F28C-5083-4908-BD69-D7E27C8BABA4"
+///   "3BA8EEF0-DFBE-4AE0-A646-E165FCA9054C"
+///   ```
+///
+/// - **Time-Ordered**: Generated according to a [draft update of RFC-4122][UUIDv6-draft-02] (UUIDv6).
+///
+///   A 128-bit identifier, consisting of a 60-bit timestamp with 100ns precision, a 14-bit sequencing number seeded
+///   from random bits, and a 48-bit node ID (which may also be random bits). To generate a time-ordered UUID,
+///   call the static ``timeOrdered()`` function.
+///
+///   ```swift
+///   for _ in 0..<3 {
+///     print(UniqueID.timeOrdered())
+///   }
+///
+///   "1EC3C81E-A361-658C-BB38-65AAEF71CFCF"
+///   "1EC3C81E-A361-6F6E-BB38-6DE69B9BCA1B"
+///   "1EC3C81E-A362-698C-BB38-050642A95C73"
+///    |------------- --| |--| |----------|
+///        timestamp       sq      node
+///   ```
+///
+///   As you can see, time-ordered UUIDs generated in sequence share a common prefix (from the timestamp), yet
+///   retain high collision avoidance. This allows the use of sorted data structures and algorithms
+///   such as binary search, as an alternative to hash tables. They are far more efficient than random UUIDs for use
+///   as database primary keys.
+///
+/// > Tip:
+/// > Random and Time-Ordered UUIDs may coexist in the same database.
+/// > They have different version numbers, so they are guaranteed to never collide.
+///
+///
+/// ### Compatibility with Foundation UUID
+///
+///
+/// `UniqueID` is fully compatible with Foundation's `UUID` type, including being compatible with UUIDs in serialized
+/// JSON form. This makes it easy to experiment with time-ordered UUIDs in your application:
+///
+/// ```swift
+/// // Change from `UUID()` to `UUID(.timeOrdered())`:
+/// import Foundation
+/// import UniqueID
+///
+/// struct MyRecord {
+///   var id = UUID(.timeOrdered())  // <--
+///   // Other properties...
+/// }
+/// ```
+///
+/// To construct a `UniqueID` from a Foundation `UUID`, simply initialize a value:
+///
+/// ```swift
+/// import Foundation
+/// import UniqueID
+///
+/// let foundationID = UUID()
+/// let swiftID = UniqueID(foundationID)  // <--
+/// ```
+///
+///
+/// ### Reading UUID Components
+///
+///
+/// Time-ordered UUIDs include components with meaningful values - such as the time they were generated.
+/// To read these values, use the ``components(_:)`` function:
+///
+/// ```swift
+/// let id = UniqueID("1EC5FE44-E511-6910-BBFA-F7B18FB57436")!
+/// id.components(.timeOrdered)?.timestamp
+/// // ✅ "2021-12-18 09:24:31 +0000"
+/// ```
+///
 ///
 /// [RFC-4122-UUIDv4]: https://datatracker.ietf.org/doc/html/rfc4122#section-4.4
 /// [UUIDv6-draft-02]: https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-02
+///
+/// ## Topics
+///
+/// ### Generating a UUID
+///
+/// - ``random()``
+/// - ``random(using:)``
+/// - ``timeOrdered()``
+/// - ``timeOrdered(using:)``
+///
+/// ### Converting from a Foundation UUID
+///
+/// - ``init(_:)-30hew``
+///
+/// ### Parsing a UUID String
+///
+/// - ``init(_:)-7p61g``
+/// - ``init(utf8:)``
+///
+/// ### Obtaining a UUID's String Representation
+///
+/// - ``serialized(lowercase:separators:)``
+///
+/// ### UUIDs as Bytes
+///
+/// - ``init(bytes:)-6y0j``
+/// - ``init(bytes:)-bnh6``
+/// - ``bytes-swift.property``
+/// - ``withUnsafeBytes(_:)``
+///
+/// ### Reading a UUID's Components
+///
+/// - ``components(_:)``
+/// - ``TimeOrdered``
+///
+/// ### Advanced UUID Generation
+///
+/// - ``timeOrdered(node:)``
+/// - ``timeOrdered(rawTimestamp:sequence:node:)``
+///
+/// ### Other
+///
+/// - ``version``
+/// - ``null``
 ///
 public struct UniqueID {
 
@@ -156,7 +274,15 @@ extension UniqueID {
 
   /// Invokes `body` with a pointer to the bytes of this UUID.
   ///
-  /// The pointer provided to `body` must not escape the closure.
+  /// ```swift
+  /// let id = UniqueID.random()
+  /// id.withUnsafeBytes { bytes in
+  ///   // ... use 'bytes'
+  /// }
+  /// ```
+  ///
+  /// > Important:
+  /// > The pointer provided to `body` must not escape the closure.
   ///
   @inlinable
   public func withUnsafeBytes<T>(_ body: (UnsafeRawBufferPointer) throws -> T) rethrows -> T {

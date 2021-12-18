@@ -55,11 +55,19 @@ public protocol _UniqueIDComponents {
 
 extension UniqueID {
 
-  /// A type which exposes a view of the embedded information within certain UUIDs.
+  /// A view of the embedded information within certain UUIDs.
   ///
   public typealias Components = _UniqueIDComponents
 
-  /// Returns a view of the embedded components within this UUID, if it is compatible with the requested view.
+  /// Returns a view of the embedded information within this UUID.
+  ///
+  /// The following example demonstrates extracting the timestamp from a time-ordered UUID.
+  ///
+  /// ```swift
+  /// let id = UniqueID("1EC5FE44-E511-6910-BBFA-F7B18FB57436")!
+  /// id.components(.timeOrdered)?.timestamp
+  /// // ✅ "2021-12-18 09:24:31 +0000"
+  /// ```
   ///
   @inlinable
   public func components<ViewType: Components>(_: @autoclosure () -> ViewType) -> ViewType? {

@@ -20,6 +20,23 @@ extension UniqueID {
   /// They are 128-bit identifiers, consisting of 122 random or pseudo-random bits, and are the most common form of UUIDs;
   /// for example, they are the ones Foundation's `UUID` type creates by default.
   ///
+  /// ```swift
+  /// for _ in 0..<5 {
+  ///   print(UniqueID.random())
+  /// }
+  ///
+  /// "BB0B5841-2BC0-49E2-BC5C-362CC34D7225"
+  /// "B08AF1F7-E2D3-4175-913D-369140612FF5"
+  /// "A453FB62-DF71-436F-9AC1-0414793DFA16"
+  /// "485EEB84-A4BA-44FE-BE3B-AD90390B0523"
+  /// "8A9AE1FA-4104-442C-B459-8F682E77F2F4"
+  /// ```
+  ///
+  /// > Note:
+  /// > The uniqueness of these IDs depends on the quality of the system's random number generator.
+  /// > See [`SystemRandomNumberGenerator`](https://developer.apple.com/documentation/swift/systemrandomnumbergenerator)
+  /// > for more information.
+  ///
   /// [RFC-4122-UUIDv4]: https://datatracker.ietf.org/doc/html/rfc4122#section-4.4
   ///
   @inlinable
@@ -33,6 +50,24 @@ extension UniqueID {
   /// This function generates version 4 UUIDs, as defined by [RFC-4122][RFC-4122-UUIDv4].
   /// They are 128-bit identifiers, consisting of 122 random or pseudo-random bits, and are the most common form of UUIDs;
   /// for example, they are the ones Foundation's `UUID` type creates by default.
+  ///
+  /// ```swift
+  /// var rng = MyRandomNumberGenerator()
+  /// for _ in 0..<5 {
+  ///   print(UniqueID.random(using: &rng))
+  /// }
+  ///
+  /// "BB0B5841-2BC0-49E2-BC5C-362CC34D7225"
+  /// "B08AF1F7-E2D3-4175-913D-369140612FF5"
+  /// "A453FB62-DF71-436F-9AC1-0414793DFA16"
+  /// "485EEB84-A4BA-44FE-BE3B-AD90390B0523"
+  /// "8A9AE1FA-4104-442C-B459-8F682E77F2F4"
+  /// ```
+  ///
+  /// > Note:
+  /// > The uniqueness of these IDs depends on the properties of the given random number generator.
+  /// > A poor-quality generator may result in more collisions, and a seedable generator can be used in testing
+  /// > to generate repeatable IDs.
   ///
   /// [RFC-4122-UUIDv4]: https://datatracker.ietf.org/doc/html/rfc4122#section-4.4
   ///

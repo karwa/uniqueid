@@ -20,6 +20,9 @@
 
     /// Losslessly convert a `UniqueID` to a Foundation `UUID`.
     ///
+    /// The bytes of the UniqueID are preserved exactly.
+    /// Both random (v4) and time-ordered (v6) IDs are supported.
+    ///
     @inlinable
     public init(_ uniqueID: UniqueID) {
       self.init(uuid: uniqueID.bytes)
@@ -30,18 +33,27 @@
 
     /// Losslessly convert a Foundation `UUID` to a `UniqueID`.
     ///
+    /// The bytes of the Foundation UUID are preserved exactly.
+    /// By default, Foundation generates random UUIDs (v4).
+    ///
     @inlinable
     public init(_ uuid: Foundation.UUID) {
       self.init(bytes: uuid.uuid)
     }
   }
 
-  // Note: 'Date' will move in to the standard library and increase precision to capture this timestamp exactly.
+  // Note: 'Date' might move in to the standard library and increase precision to capture this timestamp exactly.
   // https://forums.swift.org/t/pitch-clock-instant-date-and-duration/52451
 
   extension UniqueID.TimeOrdered {
 
     /// The timestamp of the UUID. Note that this has at most 100ns precision.
+    ///
+    /// ```swift
+    /// let id = UniqueID("1EC5FE44-E511-6910-BBFA-F7B18FB57436")!
+    /// id.components(.timeOrdered)?.timestamp
+    /// // ✅ "2021-12-18 09:24:31 +0000"
+    /// ```
     ///
     @inlinable
     public var timestamp: Date {

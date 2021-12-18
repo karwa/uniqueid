@@ -16,13 +16,17 @@ extension UniqueID {
 
   /// Parses a UUID from its string representation.
   ///
-  /// This parser accepts a string of 32 ASCII hex characters. It is quite lenient, accepting any number of dashes ("-") to break the string up in to chunks
-  /// of evenly-sized units. Additionally, the UUID may be surrounded by curly braces ("Microsoft style"). For example, all of the following parse successfully:
+  /// This parser accepts a string of 32 ASCII hex characters.
+  /// It is quite lenient, accepting any number of dashes (`"-"`) to break the string up in to chunks of
+  /// evenly-sized units. Additionally, the UUID may be surrounded by curly braces ("Microsoft style").
   ///
-  /// - 1EC3A5FB-6FE9-64D8-8004-C750087BF2DB
-  /// - {1ec3a5fb-6fe9-64d8-8004-c750087bf2db}
-  /// - 1ec3A5fB-6fE9-64d8-8004-c750087Bf2Db
-  /// - 1E-C3-A5-FB-6F-E9-64-D8-80-04-C7-50-08-7B-F2-DB
+  /// For example, all of the following parse successfully:
+  ///
+  /// - `1EC3A5FB-6FE9-64D8-8004-C750087BF2DB` (standard)
+  /// - `{1ec3a5fb-6fe9-64d8-8004-c750087bf2db}` (curly braces)
+  /// - `1ec3A5fB-6fE9-64d8-8004-c750087Bf2Db` (mixed case)
+  /// - `1ec3a5fb6fe964d88004c750087bf2db` (no dashes)
+  /// - `1E-C3-A5-FB-6F-E9-64-D8-80-04-C7-50-08-7B-F2-DB` (lots of dashes)
   ///
   @inlinable
   public init?<StringType>(
@@ -37,13 +41,20 @@ extension UniqueID {
 
   /// Parses a UUID from its string representation, provided as a collection of UTF-8 code-units.
   ///
-  /// This parser accepts a string of 32 ASCII hex characters. It is quite lenient, accepting any number of dashes ("-") to break the string up in to chunks
-  /// of evenly-sized units. Additionally, the UUID may be surrounded by curly braces ("Microsoft style"). For example, all of the following parse successfully:
+  /// This parser accepts a string of 32 ASCII hex characters.
+  /// It is quite lenient, accepting any number of dashes (`"-"`) to break the string up in to chunks of
+  /// evenly-sized units. Additionally, the UUID may be surrounded by curly braces ("Microsoft style").
+  /// For example, all of the following parse successfully:
   ///
-  /// - 1EC3A5FB-6FE9-64D8-8004-C750087BF2DB
-  /// - {1ec3a5fb-6fe9-64d8-8004-c750087bf2db}
-  /// - 1ec3A5fB-6fE9-64d8-8004-c750087Bf2Db
-  /// - 1E-C3-A5-FB-6F-E9-64-D8-80-04-C7-50-08-7B-F2-DB
+  /// - `1EC3A5FB-6FE9-64D8-8004-C750087BF2DB` (standard)
+  /// - `{1ec3a5fb-6fe9-64d8-8004-c750087bf2db}` (curly braces)
+  /// - `1ec3A5fB-6fE9-64d8-8004-c750087Bf2Db` (mixed case)
+  /// - `1ec3a5fb6fe964d88004c750087bf2db` (no dashes)
+  /// - `1E-C3-A5-FB-6F-E9-64-D8-80-04-C7-50-08-7B-F2-DB` (lots of dashes)
+  ///
+  /// > Note:
+  /// > This is not the same as constructing a UUID from its raw bytes.
+  /// > The bytes provided to this function must contain a formatted UUID string.
   ///
   @inlinable @inline(never)
   public init?<UTF8Bytes>(

@@ -71,9 +71,6 @@ internal var _uuidv6GeneratorState = UUIDv6GeneratorState()
     guard pthread_mutexattr_init(&attrs) == 0 else { fatalError("Failed to create pthread_mutexattr_t") }
     // Use adaptive spinning before calling in to the kernel (GNU extension).
     let _ = pthread_mutexattr_settype(&attrs, CInt(PTHREAD_MUTEX_ADAPTIVE_NP))
-    // Bump lock-holder's priority if waited on by higher-priority threads.
-    // Prevents priority inversion.
-    let _ = pthread_mutexattr_setprotocol(&attrs, CInt(PTHREAD_PRIO_INHERIT))
     guard pthread_mutex_init(mutex, &attrs) == 0 else { fatalError("Failed to create pthread_mutex_t") }
     pthread_mutexattr_destroy(&attrs)
 

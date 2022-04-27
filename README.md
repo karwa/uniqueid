@@ -1,5 +1,7 @@
 # UniqueID
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkarwa%2Funiqueid%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/karwa/uniqueid) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkarwa%2Funiqueid%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/karwa/uniqueid)
+
 UUIDv4 and v6\* generation in Swift.
 
 [[Documentation](https://karwa.github.io/uniqueid/main/documentation/uniqueid)]

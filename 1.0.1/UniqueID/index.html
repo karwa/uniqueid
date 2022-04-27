@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniqueID - UniqueID</title>
+    <link rel="stylesheet" type="text/css" href="/uniqueid/1.0.1/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/uniqueid/1.0.1/">
+            <strong>
+                UniqueID
+            </strong>
+            <span>Documentation</span>
+        </a>
+        <sup>Beta</sup>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Nested Types</a></li><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#nested type aliases">Nested Type Aliases</a><ul><li class="typealias"><a href="#uniqueid.components">Components</a></li><li class="typealias"><a href="#uniqueid.bytes">Bytes</a></li></ul></li><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#uniqueid.init(_:)">init(_:​)</a></li><li class="initializer"><a href="#uniqueid.init?(_:)">init?(_:​)</a></li><li class="initializer"><a href="#uniqueid.init?(utf8:)">init?(utf8:​)</a></li><li class="initializer"><a href="#uniqueid.init(bytes:)">init(bytes:​)</a></li><li class="initializer"><a href="#uniqueid.init?(bytes:)">init?(bytes:​)</a></li><li class="initializer"><a href="#uniqueid.init(from:)">init(from:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#uniqueid.bytes">bytes</a></li><li class="variable"><a href="#uniqueid.null">null</a></li><li class="variable"><a href="#uniqueid.description">description</a></li><li class="variable"><a href="#uniqueid.version">version</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#uniqueid.components(_:)">components(_:​)</a></li><li class="function"><a href="#uniqueid.serialized(lowercase:separators:)">serialized(lowercase:​separators:​)</a></li><li class="function"><a href="#uniqueid.random()">random()</a></li><li class="function"><a href="#uniqueid.random(using:)">random(using:​)</a></li><li class="function"><a href="#uniqueid.timeordered()">time​Ordered()</a></li><li class="function"><a href="#uniqueid.timeordered(using:)">time​Ordered(using:​)</a></li><li class="function"><a href="#uniqueid.timeordered(node:)">time​Ordered(node:​)</a></li><li class="function"><a href="#uniqueid.timeordered(rawtimestamp:sequence:node:)">time​Ordered(raw​Timestamp:​sequence:​node:​)</a></li><li class="function"><a href="#uniqueid.hash(into:)">hash(into:​)</a></li><li class="function"><a href="#uniqueid.encode(to:)">encode(to:​)</a></li><li class="function"><a href="#uniqueid.withunsafebytes(_:)">with​Unsafe​Bytes(_:​)</a></li></ul></li><li><a href="#operators">Operators</a><ul><li class="function"><a href="#uniqueid.==">==</a></li><li class="function"><a href="#uniqueid.&lt;">&lt;</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Structure</small>
+    <code class="name">Unique​ID</code>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">struct</span> <span class="type">UniqueID</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A Universally Unique IDentifier (UUID).</p>
+
+</div>
+<div class="discussion">
+    <p>A UUID is an identifier that is unique across both space and time, with respect to the space of all UUIDs.
+A UUID can be used for multiple purposes, from tagging objects with an extremely short lifetime, to reliably identifying very persistent objects across a network.</p>
+
+<p><code>UniqueID</code> supports any 128-bit UUID, and includes features to generate 2 kinds of ID:</p>
+
+<ul>
+<li>
+<p><strong>random</strong>: As defined in <a href="https://datatracker.ietf.org/doc/html/rfc4122#section-4.4">RFC-4122</a> (UUIDv4). A 128-bit identifier, consisting of 122 random or pseudo-random bits.
+These are the most common form of UUIDs; for example, they are the ones Foundation's <code>UUID</code> type creates by default.
+The idea is that because this is such a large number, the chance of a system observing a collision is so low that it can be safely ignored.
+That said, they rely heavily on the amount of entropy in the random bits, and when a system is ingesting IDs created by distributed nodes or devices,
+the chances of collision may be higher.</p>
+</li>
+<li>
+<p><strong>time-ordered</strong>: Generated according to a <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-02">draft update of RFC-4122</a> (UUIDv6). A 128-bit identifier, consisting of a
+fixed-precision timestamp, per-process sequencing number, and 47-bit node ID (which may be random or pseudo-random bits). Whilst RFC-4122
+did include time-based UUIDs (UUIDv1), it ordered the bits such that they had poor locality and couldn't be sorted easily. UUIDv6 rearranges these bits,
+which dramatically improves their usability as database keys. The node ID can be configured to provide even better resilience against collisions.</p>
+</li>
+</ul>
+
+</div>
+<section id="relationships">
+    <h2 hidden>Relationships</h2>
+        
+        <h3>Nested Types</h3>
+<dl>
+    <dt class="structure"><code><a href="/uniqueid/1.0.1/UniqueID_TimeOrdered">UniqueID.TimeOrdered</a></code></dt>
+<dd><p>The components of a time-ordered (version 6) UUID.</p>
+</dd>
+</dl>
+<h3>Conforms To</h3>
+<dl>
+    <dt class="unknown"><code>Codable</code></dt>
+<dt class="unknown"><code>Comparable</code></dt>
+<dt class="unknown"><code>CustomStringConvertible</code></dt>
+<dt class="unknown"><code>Equatable</code></dt>
+<dt class="unknown"><code>Hashable</code></dt>
+<dt class="unknown"><code>LosslessStringConvertible</code></dt>
+</dl>
+</section>
+    <section id="nested type aliases">
+        <h2>Nested Type Aliases</h2>
+
+        <div role="article" class="typealias" id="uniqueid.components">
+    <h3>
+        <code>Components</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">typealias</span> <span class="variable">Components</span> = <span class="type">_UniqueIDComponents</span></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A type which exposes a view of the embedded information within certain UUIDs.</p>
+
+</div>
+</div>
+<div role="article" class="typealias" id="uniqueid.bytes">
+    <h3>
+        <code>Bytes</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">typealias</span> <span class="variable">Bytes</span> = (
+  <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>,
+  <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>, <span class="type">UInt8</span>
+)</code></pre>
+</div>
+</div>
+    </section>
+    <section id="initializers">
+        <h2>Initializers</h2>
+
+        <div role="article" class="initializer" id="uniqueid.init(_:)">
+    <h3>
+        <code>init(_:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">init</span>(<span class="keyword">_</span> <span class="variable">uuid</span>: <span class="type">Foundation</span>.<span class="type">UUID</span>) </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Losslessly convert a Foundation <code>UUID</code> to a <code>UniqueID</code>.</p>
+
+</div>
+</div>
+<div role="article" class="initializer" id="uniqueid.init?(_:)">
+    <h3>
+        <code>init?(_:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">init</span>?&lt;<span class="variable">StringType</span>&gt;(
+  <span class="keyword">_</span> <span class="variable">string</span>: <span class="type">StringType</span>
+) <span class="keyword">where</span> <span class="type">StringType</span>: <span class="type">StringProtocol</span>, <span class="type">StringType</span>.<span class="type">UTF8View</span>: <span class="type">BidirectionalCollection</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Parses a UUID from its string representation.</p>
+
+</div>
+<div class="discussion">
+    <p>This parser accepts a string of 32 ASCII hex characters. It is quite lenient, accepting any number of dashes (&quot;-&quot;) to break the string up in to chunks
+of evenly-sized units. Additionally, the UUID may be surrounded by curly braces (&quot;Microsoft style&quot;). For example, all of the following parse successfully:</p>
+
+<ul>
+<li>
+<p>1EC3A5FB-6FE9-64D8-8004-C750087BF2DB</p>
+</li>
+<li>
+<p>{1ec3a5fb-6fe9-64d8-8004-c750087bf2db}</p>
+</li>
+<li>
+<p>1ec3A5fB-6fE9-64d8-8004-c750087Bf2Db</p>
+</li>
+<li>
+<p>1E-C3-A5-FB-6F-E9-64-D8-80-04-C7-50-08-7B-F2-DB</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div role="article" class="initializer" id="uniqueid.init?(utf8:)">
+    <h3>
+        <code>init?(utf8:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span> <span class="attribute">@</span><span class="attribute">inline</span>(<span class="variable">never</span>)
+<span class="keyword">public</span> <span class="keyword">init</span>?&lt;<span class="variable">UTF8Bytes</span>&gt;(
+  <span class="variable">utf8</span>: <span class="type">UTF8Bytes</span>
+) <span class="keyword">where</span> <span class="type">UTF8Bytes</span>: <span class="type">BidirectionalCollection</span>, <span class="type">UTF8Bytes</span>.<span class="type">Element</span> == <span class="type">UInt8</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Parses a UUID from its string representation, provided as a collection of UTF-8 code-units.</p>
+
+</div>
+<div class="discussion">
+    <p>This parser accepts a string of 32 ASCII hex characters. It is quite lenient, accepting any number of dashes (&quot;-&quot;) to break the string up in to chunks
+of evenly-sized units. Additionally, the UUID may be surrounded by curly braces (&quot;Microsoft style&quot;). For example, all of the following parse successfully:</p>
+
+<ul>
+<li>
+<p>1EC3A5FB-6FE9-64D8-8004-C750087BF2DB</p>
+</li>
+<li>
+<p>{1ec3a5fb-6fe9-64d8-8004-c750087bf2db}</p>
+</li>
+<li>
+<p>1ec3A5fB-6fE9-64d8-8004-c750087Bf2Db</p>
+</li>
+<li>
+<p>1E-C3-A5-FB-6F-E9-64-D8-80-04-C7-50-08-7B-F2-DB</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div role="article" class="initializer" id="uniqueid.init(bytes:)">
+    <h3>
+        <code>init(bytes:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">init</span>(<span class="variable">bytes</span>: <span class="type">Bytes</span>) </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Creates a UUID with the given bytes.</p>
+
+</div>
+</div>
+<div role="article" class="initializer" id="uniqueid.init?(bytes:)">
+    <h3>
+        <code>init?(bytes:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">init</span>?&lt;<span class="variable">Bytes</span>&gt;(<span class="variable">bytes</span>: <span class="type">Bytes</span>) <span class="keyword">where</span> <span class="type">Bytes</span>: <span class="type">Sequence</span>, <span class="type">Bytes</span>.<span class="type">Element</span> == <span class="type">UInt8</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Creates a UUID with the given sequence of bytes. The sequence must contain exactly 16 bytes.</p>
+
+</div>
+</div>
+<div role="article" class="initializer" id="uniqueid.init(from:)">
+    <h3>
+        <code>init(from:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">init</span>(<span class="variable">from</span> <span class="variable">decoder</span>: <span class="type">Decoder</span>) <span class="keyword">throws</span> </code></pre>
+</div>
+</div>
+    </section>
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="uniqueid.bytes">
+    <h3>
+        <code>bytes</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">let</span> <span class="variable">bytes</span>: <span class="type">Bytes</span></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The bytes of this UUID.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.null">
+    <h3>
+        <code>null</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="variable">null</span>: <span class="type">UniqueID</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The null UUID, <code>00000000-0000-0000-0000-000000000000</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.description">
+    <h3>
+        <code>description</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">description</span>: <span class="type">String</span> </code></pre>
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.version">
+    <h3>
+        <code>version</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">version</span>: <span class="type">Int</span>? </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The version of this UUID, if it can be determined.</p>
+
+</div>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="uniqueid.components(_:)">
+    <h3>
+        <code>components(_:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">func</span> <span class="function">components</span>&lt;<span class="variable">ViewType</span>: <span class="type">Components</span>&gt;(<span class="keyword">_</span>: <span class="attribute">@</span><span class="attribute">autoclosure</span> () -&gt; <span class="type">ViewType</span>) -&gt; <span class="type">ViewType</span>? </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Returns a view of the embedded components within this UUID, if it is compatible with the requested view.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.serialized(lowercase:separators:)">
+    <h3>
+        <code>serialized(lowercase:​separators:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">serialized</span>(
+  <span class="variable">lowercase</span>: <span class="type">Bool</span> = <span class="keyword">false</span>, <span class="variable">separators</span>: <span class="type">Bool</span> = <span class="keyword">true</span>
+) -&gt; <span class="type">String</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Returns a <code>String</code> representation of this UUID.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>lowercase</th>
+    <td><code class="type">Bool</code></td>
+    <td><p>Whether to use lowercase hexadecimal characters in the result. If <code>false</code>, the result will be uppercased. The default is <code>false</code>.</p>
+</td>
+</tr>
+<tr>
+    <th>separators</th>
+    <td><code class="type">Bool</code></td>
+    <td><p>Whether the result should be in the standard 8-4-4-4-12 format, with &quot;-&quot; separators between groups. The default is <code>true</code>.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="uniqueid.random()">
+    <h3>
+        <code>random()</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> <span class="function">random</span>() -&gt; <span class="type">UniqueID</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Generates a new UUID with random bits from the system's random number generator.</p>
+
+</div>
+<div class="discussion">
+    <p>This function generates version 4 UUIDs, as defined by <a href="https://datatracker.ietf.org/doc/html/rfc4122#section-4.4">RFC-4122</a>.
+They are 128-bit identifiers, consisting of 122 random or pseudo-random bits, and are the most common form of UUIDs;
+for example, they are the ones Foundation's <code>UUID</code> type creates by default.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.random(using:)">
+    <h3>
+        <code>random(using:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> <span class="function">random</span>&lt;<span class="variable">RNG</span>&gt;(<span class="variable">using</span> <span class="variable">rng</span>: <span class="keyword">inout</span> <span class="type">RNG</span>) -&gt; <span class="type">UniqueID</span> <span class="keyword">where</span> <span class="type">RNG</span>: <span class="type">RandomNumberGenerator</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Generates a new UUID with random bits from the given random number generator.</p>
+
+</div>
+<div class="discussion">
+    <p>This function generates version 4 UUIDs, as defined by <a href="https://datatracker.ietf.org/doc/html/rfc4122#section-4.4">RFC-4122</a>.
+They are 128-bit identifiers, consisting of 122 random or pseudo-random bits, and are the most common form of UUIDs;
+for example, they are the ones Foundation's <code>UUID</code> type creates by default.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.timeordered()">
+    <h3>
+        <code>time​Ordered()</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> <span class="function">timeOrdered</span>() -&gt; <span class="type">UniqueID</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Generates a new UUID sortable by creation time, using the system's random number generator.</p>
+
+</div>
+<div class="discussion">
+    <p>This function generates version 6 UUIDs, which are currently in <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-02">draft form</a>.
+They ensure uniqueness in time and space using 3 components:</p>
+
+<ol>
+<li>An embedded timestamp, taken from the system clock with 100ns resolution.</li>
+<li>A 14-bit sequence number, which is a synchronized process-wide counter ensuring UUIDs within each 100ns timestamp are unique.</li>
+<li>A 48-bit node identifier, which distinguishes UUIDs in space. Typically, these are random or pseudo-random bits, but an application-specific
+identifier may also be used.</li>
+</ol>
+
+<p>Version 6 UUIDs are similar to version 1 UUIDs from RFC-4122, except that their timestamps are stored in a manner friendly for sorting and filtering,
+and their better locality improves the performance of many databases and data structures. They are highly resistant to collisions, and can incorporate
+externally-derived identifiers for even greater collision guarantees in the context of a particular distributed system or application.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.timeordered(using:)">
+    <h3>
+        <code>time​Ordered(using:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> <span class="function">timeOrdered</span>&lt;<span class="variable">RNG</span>&gt;(<span class="variable">using</span> <span class="variable">rng</span>: <span class="keyword">inout</span> <span class="type">RNG</span>) -&gt; <span class="type">UniqueID</span> <span class="keyword">where</span> <span class="type">RNG</span>: <span class="type">RandomNumberGenerator</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Generates a new UUID sortable by creation time, using the given random number generator.</p>
+
+</div>
+<div class="discussion">
+    <p>This function generates version 6 UUIDs, which are currently in <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-02">draft form</a>.
+They ensure uniqueness in time and space using 3 components:</p>
+
+<ol>
+<li>An embedded timestamp, taken from the system clock with 100ns resolution.</li>
+<li>A 14-bit sequence number, which is a synchronized process-wide counter ensuring UUIDs within each 100ns timestamp are unique.</li>
+<li>A 48-bit node identifier, which distinguishes UUIDs in space. Typically, these are random or pseudo-random bits, but an application-specific
+identifier may also be used.</li>
+</ol>
+
+<p>Version 6 UUIDs are similar to version 1 UUIDs from RFC-4122, except that their timestamps are stored in a manner friendly for sorting and filtering,
+and their better locality improves the performance of many databases and data structures. They are highly resistant to collisions, and can incorporate
+externally-derived identifiers for even greater collision guarantees in the context of a particular distributed system or application.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>rng</th>
+    <td><code class="type">inout RNG</code></td>
+    <td><p>The random number generator used to create a node identifier.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="uniqueid.timeordered(node:)">
+    <h3>
+        <code>time​Ordered(node:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> <span class="function">timeOrdered</span>(<span class="variable">node</span>: <span class="type">UInt64</span>) -&gt; <span class="type">UniqueID</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Generates a new UUID sortable by creation time, with a particular node identifier.</p>
+
+</div>
+<div class="discussion">
+    <p>This function generates version 6 UUIDs, which are currently in <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-02">draft form</a>.
+They ensure uniqueness in time and space using 3 components:</p>
+
+<ol>
+<li>An embedded timestamp, taken from the system clock with 100ns resolution.</li>
+<li>A 14-bit sequence number, which is a synchronized process-wide counter ensuring UUIDs within each 100ns timestamp are unique.</li>
+<li>A 48-bit node identifier, which distinguishes UUIDs in space. Typically, these are random or pseudo-random bits, but an application-specific
+identifier may also be used.</li>
+</ol>
+
+<p>Version 6 UUIDs are similar to version 1 UUIDs from RFC-4122, except that their timestamps are stored in a manner friendly for sorting and filtering,
+and their better locality improves the performance of many databases and data structures. They are highly resistant to collisions, and can incorporate
+externally-derived identifiers for even greater collision guarantees in the context of a particular distributed system or application.</p>
+
+<p>Using a stable node identifier can guarantee collision avoidance in many applications - for example, 48 bits may be sufficient to create a combined
+<code>[ user ID | device ID | process counter ]</code> value, with user and device ID combinations being guaranteed unique by a server
+and reflecting that, at any particular time, a given user's device only has a limited number of processes generating IDs for your database.</p>
+
+<p>You don't necessarily need external co-ordination - a 47-bit random value has sufficient entropy for most applications, but for distributed systems and
+applications where collision probabilties are higher, it often doesn't cost much to get it. Note that using a stable node identifier limits the number of
+unique IDs within each 100ns timestamp to 16,384 (the number of unique sequence numbers), shared across all time-ordered UUIDs.
+This usually isn't a problem - 16K UUIDs per 100ns is an extremely high frequency.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>node</th>
+    <td><code class="type">UInt64</code></td>
+    <td><p>A node identifier, used to distinguish UUIDs in space (e.g. across processes/machines, tracking different sequence numbers). This may be an sequence of random or pseudo-random bits, or a value with meaning to your application (e.g. a combined user/device ID). Only the bottom 48 bits will be used.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="uniqueid.timeordered(rawtimestamp:sequence:node:)">
+    <h3>
+        <code>time​Ordered(raw​Timestamp:​sequence:​node:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> <span class="function">timeOrdered</span>(<span class="variable">rawTimestamp</span>: <span class="type">UInt64</span>, <span class="variable">sequence</span>: <span class="type">UInt16</span> = <span class="number literal">0</span>, <span class="variable">node</span>: <span class="type">UInt64</span> = <span class="number literal">0</span>) -&gt; <span class="type">UniqueID</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Creates a UUID sortable by creation time, using the given component values.</p>
+
+</div>
+<div class="discussion">
+    <p>This function creates a version 6 UUID, which are currently in <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-02">draft form</a>.
+They ensure uniqueness in time and space using 3 components:</p>
+
+<ol>
+<li>An embedded timestamp, taken from the system clock with 100ns resolution.</li>
+<li>A 14-bit sequence number, which is a synchronized process-wide counter ensuring UUIDs within each 100ns timestamp are unique.</li>
+<li>A 48-bit node identifier, which distinguishes UUIDs in space. Typically, these are random or pseudo-random bits, but an application-specific
+identifier may also be used.</li>
+</ol>
+
+<p>Version 6 UUIDs are similar to version 1 UUIDs from RFC-4122, except that their timestamps are stored in a manner friendly for sorting and filtering,
+and their better locality improves the performance of many databases and data structures. They are highly resistant to collisions, and can incorporate
+externally-derived identifiers for even greater collision guarantees in the context of a particular distributed system or application.</p>
+
+<p>Creating a UUID with a particular timestamp can be helpful when filtering UUIDs to ranges of time. For example, all UUIDs greater than
+<code>1EC3B396-11B7-6818-8000-000000000000</code> where created after 2021-11-01 17:30:17 (UTC).</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>raw​Timestamp</th>
+    <td><code class="type">UInt64</code></td>
+    <td><p>The timestamp, as a number of 100ns intervals from 00:00:00 October 15, 1582. Only the least significant 60 bits will be used.</p>
+</td>
+</tr>
+<tr>
+    <th>sequence</th>
+    <td><code class="type">UInt16</code></td>
+    <td><p>The sequence number. Only the least significant 12 bits will be used. The default is 0.</p>
+</td>
+</tr>
+<tr>
+    <th>node</th>
+    <td><code class="type">UInt64</code></td>
+    <td><p>The node ID. Only the least significant 48 bits will be used. The default is 0.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+  <h4>Returns</h4>
+  <p>A UUID, version 6, with the given component values.</p>
+
+</div>
+<div role="article" class="function" id="uniqueid.hash(into:)">
+    <h3>
+        <code>hash(into:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">func</span> <span class="function">hash</span>(<span class="variable">into</span> <span class="variable">hasher</span>: <span class="keyword">inout</span> <span class="type">Hasher</span>) </code></pre>
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.encode(to:)">
+    <h3>
+        <code>encode(to:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">func</span> <span class="function">encode</span>(<span class="variable">to</span> <span class="variable">encoder</span>: <span class="type">Encoder</span>) <span class="keyword">throws</span> </code></pre>
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.withunsafebytes(_:)">
+    <h3>
+        <code>with​Unsafe​Bytes(_:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">func</span> <span class="function">withUnsafeBytes</span>&lt;<span class="variable">T</span>&gt;(<span class="keyword">_</span> <span class="variable">body</span>: (<span class="type">UnsafeRawBufferPointer</span>) <span class="keyword">throws</span> -&gt; <span class="type">T</span>) <span class="keyword">rethrows</span> -&gt; <span class="type">T</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Invokes <code>body</code> with a pointer to the bytes of this UUID.</p>
+
+</div>
+<div class="discussion">
+    <p>The pointer provided to <code>body</code> must not escape the closure.</p>
+
+</div>
+</div>
+    </section>
+    <section id="operators">
+        <h2>Operators</h2>
+
+        <div role="article" class="function" id="uniqueid.==">
+    <h3>
+        <code>==</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> == (<span class="variable">lhs</span>: <span class="keyword">Self</span>, <span class="variable">rhs</span>: <span class="keyword">Self</span>) -&gt; <span class="type">Bool</span> </code></pre>
+</div>
+</div>
+<div role="article" class="function" id="uniqueid.<">
+    <h3>
+        <code>&lt;</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> &lt; (<span class="variable">lhs</span>: <span class="keyword">Self</span>, <span class="variable">rhs</span>: <span class="keyword">Self</span>) -&gt; <span class="type">Bool</span> </code></pre>
+</div>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2021-12-18T08:13:34+0000">December 18, 2021</time> using a fork of <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.6</span>.
+</p>
+    </footer>
+</body>
+</html>

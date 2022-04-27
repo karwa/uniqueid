@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniqueID - UniqueID.TimeOrdered</title>
+    <link rel="stylesheet" type="text/css" href="/uniqueid/1.0.1/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/uniqueid/1.0.1/">
+            <strong>
+                UniqueID
+            </strong>
+            <span>Documentation</span>
+        </a>
+        <sup>Beta</sup>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Member Of</a></li><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#uniqueid.timeordered.init?(_:)">init?(_:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#uniqueid.timeordered.timestamp">timestamp</a></li><li class="variable"><a href="#uniqueid.timeordered.uuid">uuid</a></li><li class="variable"><a href="#uniqueid.timeordered.rawtimestamp">raw​Timestamp</a></li><li class="variable"><a href="#uniqueid.timeordered.sequence">sequence</a></li><li class="variable"><a href="#uniqueid.timeordered.node">node</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Structure</small>
+    <code class="name">Unique​ID.​Time​Ordered</code>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">struct</span> <span class="type">TimeOrdered</span>: <span class="type">UniqueID</span>.<span class="type">Components</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The components of a time-ordered (version 6) UUID.</p>
+
+</div>
+<section id="relationships">
+    <h2 hidden>Relationships</h2>
+        
+        <h3>Member Of</h3>
+<dl>
+    <dt class="structure"><code><a href="/uniqueid/1.0.1/UniqueID">UniqueID</a></code></dt>
+<dd><p>A Universally Unique IDentifier (UUID).</p>
+</dd>
+</dl>
+<h3>Conforms To</h3>
+<dl>
+    <dt class="unknown"><code>UniqueID.Components</code></dt>
+</dl>
+</section>
+    <section id="initializers">
+        <h2>Initializers</h2>
+
+        <div role="article" class="initializer" id="uniqueid.timeordered.init?(_:)">
+    <h3>
+        <code>init?(_:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">init</span>?(<span class="keyword">_</span> <span class="variable">uuid</span>: <span class="type">UniqueID</span>) </code></pre>
+</div>
+</div>
+    </section>
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="uniqueid.timeordered.timestamp">
+    <h3>
+        <code>timestamp</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">timestamp</span>: <span class="type">Date</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The timestamp of the UUID. Note that this has at most 100ns precision.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.timeordered.uuid">
+    <h3>
+        <code>uuid</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">let</span> <span class="variable">uuid</span>: <span class="type">UniqueID</span></code></pre>
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.timeordered.rawtimestamp">
+    <h3>
+        <code>raw​Timestamp</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">rawTimestamp</span>: <span class="type">UInt64</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The timestamp of this UUID, as a number of 100ns intervals since 00:00:00 October 15, 1582. Note that only the least-significant 60 bits are used.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.timeordered.sequence">
+    <h3>
+        <code>sequence</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">sequence</span>: <span class="type">UInt16</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The sequence number of this UUID. This is generally just an opaque number. Note that only the least-significant 14 bits are used.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="uniqueid.timeordered.node">
+    <h3>
+        <code>node</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><span class="attribute">@</span><span class="attribute">inlinable</span>
+<span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">node</span>: <span class="type">UInt64</span> </code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The node identifier of this UUID. This may be random, or it may have some context-specific meaning. Note that only the least-significant 48 bits are used.</p>
+
+</div>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2021-12-18T08:13:34+0000">December 18, 2021</time> using a fork of <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.6</span>.
+</p>
+    </footer>
+</body>
+</html>

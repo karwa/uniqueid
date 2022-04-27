@@ -148,6 +148,10 @@ extension UniqueIDTests {
 
   func testCodable() throws {
 
+    guard #available(macOS 10.13, iOS 11.0, watchOS 4.0, tvOS 11.0, *) else {
+      throw XCTSkip("JSONEncoder.OutputFormatting.sortedKeys requires iOS 11 or newer")
+    }
+
     struct TypeWithUniqueID: Equatable, Codable {
       var name: String
       var id: UniqueID

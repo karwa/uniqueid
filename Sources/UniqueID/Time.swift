@@ -26,7 +26,7 @@
 @inlinable
 internal func _get_system_timestamp() -> UInt64 {
   let timestamp: UInt64
-  if #available(macOS 10.12, *) {
+  if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
     var time = timespec()
     clock_gettime(CLOCK_REALTIME, &time)
     timestamp =
